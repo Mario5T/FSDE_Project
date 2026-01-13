@@ -1,4 +1,4 @@
-#  SnackCrate – Subscription-Based Snacks E-Commerce Platform
+#  SnackSafari – Subscription-Based Snacks E-Commerce Platform
 
 ##  Overview
 SnackCrate is a subscription-based e-commerce platform that delivers curated snack boxes to users on a recurring basis. The platform focuses on personalized snack preferences, convenience, and discovery of new flavors, brands, and regional snacks.
