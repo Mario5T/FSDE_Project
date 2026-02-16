@@ -1,7 +1,7 @@
 #  SnackSafari – Subscription-Based Snacks E-Commerce Platform
 
 ##  Overview
-SnackSafari is a subscription-based e-commerce platform that delivers curated snack boxes to users on a recurring basis. The platform focuses on personalized snack preferences, convenience, and discovery of new flavors, brands, and regional snacks.
+Snackx is a subscription-based e-commerce platform that delivers curated snack boxes to users on a recurring basis. The platform focuses on personalized snack preferences, convenience, and discovery of new flavors, brands, and regional snacks.
 
 Users can subscribe monthly, customize preferences, skip deliveries, and manage their plans easily through a modern web interface.
 
