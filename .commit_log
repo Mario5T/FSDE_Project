@@ -3,3 +3,4 @@
 2026-02-18T11:43:03 - Set up Express server
 2026-02-19T10:34:18 - Configure CORS middleware
 2026-02-19T11:58:15 - Add SQLite database with Prisma
+2026-02-20T14:49:54 - Create User model schema
