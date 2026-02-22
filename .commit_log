@@ -5,3 +5,4 @@
 2026-02-19T11:58:15 - Add SQLite database with Prisma
 2026-02-20T14:49:54 - Create User model schema
 2026-02-21T14:45:37 - Implement user registration endpoint
+2026-02-21T10:01:32 - Implement login with JWT
