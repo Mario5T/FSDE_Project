@@ -12,3 +12,4 @@
 2026-02-23T17:09:45 - Add Snack model and seed data
 2026-02-24T15:46:06 - Create SubscriptionPlan model
 2026-02-24T13:27:19 - Add Order and OrderItem models
+2026-02-24T17:43:59 - Create Delivery model
