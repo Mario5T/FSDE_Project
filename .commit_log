@@ -43,3 +43,4 @@
 2026-03-05T13:45:17 - Seed subscription plans data
 2026-03-06T13:45:12 - Seed snack catalog with 12 items
 2026-03-06T14:28:39 - Add admin user seeding
+2026-03-06T11:19:59 - Refactor auth controller
