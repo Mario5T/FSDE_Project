@@ -44,3 +44,4 @@
 2026-03-06T13:45:12 - Seed snack catalog with 12 items
 2026-03-06T14:28:39 - Add admin user seeding
 2026-03-06T11:19:59 - Refactor auth controller
+2026-03-06T11:12:23 - Improve error handling in API routes
