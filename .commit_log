@@ -45,3 +45,4 @@
 2026-03-06T14:28:39 - Add admin user seeding
 2026-03-06T11:19:59 - Refactor auth controller
 2026-03-06T11:12:23 - Improve error handling in API routes
+2026-03-09T16:25:39 - Add input validation to auth endpoints
