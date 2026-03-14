@@ -47,3 +47,4 @@
 2026-03-06T11:12:23 - Improve error handling in API routes
 2026-03-09T16:25:39 - Add input validation to auth endpoints
 2026-03-10T17:31:47 - Fix password hashing logic
+2026-03-10T10:52:36 - Improve JWT token expiry
