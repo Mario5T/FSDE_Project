@@ -48,3 +48,4 @@
 2026-03-09T16:25:39 - Add input validation to auth endpoints
 2026-03-10T17:31:47 - Fix password hashing logic
 2026-03-10T10:52:36 - Improve JWT token expiry
+2026-03-10T14:07:49 - Add protected route component
