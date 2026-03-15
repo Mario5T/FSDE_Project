@@ -49,3 +49,4 @@
 2026-03-10T17:31:47 - Fix password hashing logic
 2026-03-10T10:52:36 - Improve JWT token expiry
 2026-03-10T14:07:49 - Add protected route component
+2026-03-12T12:08:24 - Fix React Router redirect after login
