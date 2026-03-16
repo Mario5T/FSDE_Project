@@ -52,3 +52,4 @@
 2026-03-12T12:08:24 - Fix React Router redirect after login
 2026-03-12T12:22:28 - Improve loading states across pages
 2026-03-12T11:04:44 - Add error state handling to forms
+2026-03-12T18:06:38 - Fix Prisma relations for User model
