@@ -56,3 +56,4 @@
 2026-03-13T16:24:56 - Update Prisma schema for SQLite compatibility
 2026-03-13T16:28:21 - Run initial database migration
 2026-03-13T16:21:04 - Fix category filtering on Explore page
+2026-03-14T14:44:56 - Improve snack card UI design
