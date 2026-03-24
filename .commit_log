@@ -69,3 +69,4 @@
 2026-03-18T18:06:01 - Save preferences to backend API
 2026-03-18T16:48:26 - Show subscription status in dashboard
 2026-03-19T16:13:21 - Add cancel subscription button
+2026-03-19T16:53:30 - Fix subscription date display
