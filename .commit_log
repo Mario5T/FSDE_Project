@@ -80,3 +80,4 @@
 2026-03-25T18:15:20 - Add badge color variants
 2026-03-25T13:56:51 - Update landing page CTA section
 2026-03-26T14:02:58 - Refactor API axios instance in AuthContext
+2026-03-27T11:34:20 - Add token persistence in localStorage
