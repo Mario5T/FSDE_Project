@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import { api } from '../lib/apiClient';
 
 const fallbackPlans = [
   {
@@ -28,7 +28,7 @@ export default function PlansPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('/api/plans').then(r => { if (r.data?.length) setPlans(r.data); }).catch(() => {});
+    api.get('/plans').then(r => { if (r.data?.length) setPlans(r.data); }).catch(() => {});
   }, []);
 
   const getPrice = (p) => billing === 'yearly' ? (p.monthlyPrice * 0.8).toFixed(0) : p.monthlyPrice;
@@ -38,7 +38,7 @@ export default function PlansPage() {
     try {
       await updateSubscription({ active: true, plan: plan.id });
       navigate('/dashboard');
-    } catch (err) {
+    } catch {
       alert('Failed to subscribe. Please try again.');
     }
   };

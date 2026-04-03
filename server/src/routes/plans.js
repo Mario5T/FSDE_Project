@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
       excluded: JSON.parse(p.excluded)
     }));
     res.json(parsed);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -28,7 +28,7 @@ router.get('/:id', async (req, res) => {
       features: JSON.parse(plan.features),
       excluded: JSON.parse(plan.excluded)
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -44,7 +44,7 @@ router.post('/', protect, adminOnly, async (req, res) => {
       }
     });
     res.status(201).json(plan);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });

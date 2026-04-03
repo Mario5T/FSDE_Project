@@ -23,7 +23,7 @@ router.put('/preferences', protect, async (req, res) => {
       }
     });
     res.json({ ...prefs, tastes: JSON.parse(prefs.tastes), allergies: JSON.parse(prefs.allergies) });
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -56,7 +56,7 @@ router.put('/subscription', protect, async (req, res) => {
       }
     });
     res.json(sub);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -68,7 +68,7 @@ router.get('/', protect, adminOnly, async (req, res) => {
       orderBy: { createdAt: 'desc' }
     });
     res.json(users);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });

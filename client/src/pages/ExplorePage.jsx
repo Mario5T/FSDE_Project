@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { api } from '../lib/apiClient';
 
 const categories = ['All', 'Sweet', 'Spicy', 'Savory', 'Drinks'];
 
@@ -20,7 +20,7 @@ export default function ExplorePage() {
   const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
-    axios.get('/api/snacks')
+    api.get('/snacks')
       .then(r => setSnacks(r.data))
       .catch(() => setSnacks([]))
       .finally(() => setLoading(false));

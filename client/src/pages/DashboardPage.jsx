@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -31,7 +31,7 @@ export default function DashboardPage() {
       await updatePreferences({ tastes: selectedTastes, allergies: selectedAllergies, boxSize });
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
+    } catch {
       alert('Failed to save preferences.');
     } finally {
       setSaving(false);

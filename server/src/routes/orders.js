@@ -13,7 +13,7 @@ router.get('/', protect, async (req, res) => {
       orderBy: { orderDate: 'desc' }
     });
     res.json(orders);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -49,7 +49,7 @@ router.post('/', protect, async (req, res) => {
     });
 
     res.status(201).json(order);
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: 'Server error' });
   }
 });

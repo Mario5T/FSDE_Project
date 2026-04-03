@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -38,16 +38,16 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Full Name</label>
-            <input className="input" type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} required />
+            <label htmlFor="register-name" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Full Name</label>
+            <input id="register-name" className="input" type="text" placeholder="Your name" value={name} onChange={e => setName(e.target.value)} required />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Email</label>
-            <input className="input" type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
+            <label htmlFor="register-email" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Email</label>
+            <input id="register-email" className="input" type="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Password</label>
-            <input className="input" type="password" placeholder="At least 6 characters" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} />
+            <label htmlFor="register-password" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>Password</label>
+            <input id="register-password" className="input" type="password" placeholder="At least 6 characters" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} />
           </div>
           <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '0.5rem' }} disabled={loading}>
             {loading ? 'Creating account...' : 'Create Account'}
