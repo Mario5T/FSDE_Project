@@ -102,4 +102,28 @@ SnackCrate provides:
 ##  Goal
 Build a modern, scalable, and user-friendly snack subscription platform that makes snack discovery effortless and enjoyable.
 
+---
+
+##  Implementation Notes
+
+### Architecture
+- React + Vite frontend with reusable pages, a shared auth context, and protected routing for the dashboard.
+- Express backend with Prisma ORM and SQLite storage for authentication, snacks, plans, orders, and user preferences.
+- Shared API client logic in the frontend keeps request handling consistent across pages and supports local proxying and deployed API URLs.
+
+### Workflow
+- Local development runs the backend on port 3001 and the frontend on port 5000.
+- Vite proxies `/api` requests during development, while the shared API client can also use `VITE_API_URL` in deployment.
+- GitHub Actions runs install, lint, unit/integration tests, build, and an E2E browser flow on push and pull request events.
+
+### Design Decisions
+- The dashboard keeps preference and subscription controls together so users can manage the main subscription lifecycle in one place.
+- Landing, plans, and explore pages are intentionally card-based and responsive to keep the interface readable on mobile and desktop.
+- The backend app is exported separately from the process entry point so automated tests can import it directly without starting an extra listener.
+
+### Challenges
+- SQLite required a stable environment-variable-based connection string for test and CI database isolation.
+- Frontend API calls needed one reusable client so the same code path works with the Vite proxy, CI, and deployment.
+- Browser E2E coverage is easiest when the app can boot both client and server from the test runner, so the test config starts both services automatically.
+
 

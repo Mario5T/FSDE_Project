@@ -8,6 +8,8 @@ services:
     envVars:
       - key: PORT
         value: 10000
+      - key: DATABASE_URL
+        value: file:./dev.db
 
   - type: static
     name: shopsmart-frontend

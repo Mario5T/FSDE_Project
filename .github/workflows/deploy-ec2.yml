@@ -1,0 +1,107 @@
+name: Deploy to EC2
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git ref to deploy (branch or tag)
+        required: false
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-ec2-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Validate required secrets
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_PORT: ${{ secrets.EC2_PORT }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_HOST_FINGERPRINT: ${{ secrets.EC2_HOST_FINGERPRINT }}
+          EC2_APP_DIR: ${{ secrets.EC2_APP_DIR }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          set -e
+          for key in EC2_HOST EC2_PORT EC2_USER EC2_SSH_KEY EC2_HOST_FINGERPRINT EC2_APP_DIR DATABASE_URL JWT_SECRET; do
+            if [ -z "${!key}" ]; then
+              echo "Missing required secret: $key" >&2
+              exit 1
+            fi
+          done
+
+      - name: Deploy app on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          REPO_URL: https://github.com/${{ github.repository }}.git
+          DEPLOY_REF: ${{ inputs.ref }}
+          EC2_APP_DIR: ${{ secrets.EC2_APP_DIR }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.EC2_PORT }}
+          fingerprint: ${{ secrets.EC2_HOST_FINGERPRINT }}
+          script_stop: true
+          command_timeout: 20m
+          envs: REPO_URL,DEPLOY_REF,EC2_APP_DIR,DATABASE_URL,JWT_SECRET
+          script: |
+            set -euo pipefail
+
+            mkdir -p "$EC2_APP_DIR"
+            cd "$EC2_APP_DIR"
+
+            if [ ! -d .git ]; then
+              git init
+              git remote add origin "$REPO_URL"
+            fi
+
+            git fetch --prune origin
+            git checkout -B "$DEPLOY_REF" "origin/$DEPLOY_REF"
+
+            cd server
+            npm ci --omit=dev
+
+            cat > .env <<EOF
+            PORT=3001
+            DATABASE_URL=$DATABASE_URL
+            JWT_SECRET=$JWT_SECRET
+            EOF
+
+            npx prisma migrate deploy
+            if pm2 describe snacksafari-server >/dev/null 2>&1; then
+              pm2 restart snacksafari-server --update-env
+            else
+              pm2 start src/index.js --name snacksafari-server
+            fi
+            pm2 save
+
+      - name: Verify health endpoint on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.EC2_PORT }}
+          fingerprint: ${{ secrets.EC2_HOST_FINGERPRINT }}
+          script_stop: true
+          script: |
+            set -e
+            curl -fsS http://127.0.0.1:3001/api/health
