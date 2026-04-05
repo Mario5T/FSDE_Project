@@ -72,7 +72,12 @@ jobs:
             fi
 
             git fetch --prune origin
-            git checkout -B "$DEPLOY_REF" "origin/$DEPLOY_REF"
+            # Remove stale untracked files from older non-git deployments while
+            # keeping runtime files that should persist on server.
+            git clean -fd \
+              -e server/.env \
+              -e server/prod.db
+            git checkout -f -B "$DEPLOY_REF" "origin/$DEPLOY_REF"
 
             cd server
             npm ci --omit=dev
