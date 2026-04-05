@@ -134,9 +134,3 @@ What the workflow does:
 - runs `npx prisma migrate deploy`
 - restarts (or creates) PM2 process `snacksafari-server`
 - verifies `/api/health` on the EC2 host
-
-## Notes
-
-- Prisma datasource is environment-driven (`DATABASE_URL`) in `server/prisma/schema.prisma`.
-- Vite dev server proxies API requests to backend during local development.
-- If deploying with SQLite, ensure persistent storage strategy on your host.
