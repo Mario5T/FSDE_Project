@@ -45,7 +45,7 @@ jobs:
           done
 
       - name: Deploy app on EC2
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.5
         env:
           REPO_URL: https://github.com/${{ github.repository }}.git
           DEPLOY_REF: ${{ inputs.ref }}
@@ -97,7 +97,7 @@ jobs:
             pm2 save
 
       - name: Verify health endpoint on EC2
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
