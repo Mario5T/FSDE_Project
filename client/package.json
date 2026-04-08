@@ -24,7 +24,7 @@
     "@testing-library/react": "^16.0.1",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^6.0.1",
     "eslint": "^9.22.0",
     "eslint-plugin-react": "^7.37.5",
     "jsdom": "^25.0.1",
