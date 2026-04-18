@@ -1,57 +1,15 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
-
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'snacksafari_jwt_secret_key_2024', { expiresIn: '30d' });
-};
+const authService = require('../services/authService');
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'Please provide all fields' });
+    const result = await authService.registerUser(req.body);
+    if (result.error) {
+      return res.status(result.error.status).json({ message: result.error.message });
     }
-
-    if (password.length < 6) {
-      return res.status(400).json({ message: 'Password must be at least 6 characters' });
-    }
-
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      return res.status(400).json({ message: 'User already exists with that email' });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        preferences: {
-          create: {
-            tastes: '[]',
-            allergies: '[]',
-            boxSize: 'Medium'
-          }
-        },
-        subscription: {
-          create: {
-            active: false
-          }
-        }
-      },
-      select: { id: true, name: true, email: true, role: true, createdAt: true }
-    });
 
     res.status(201).json({
-      user,
-      token: generateToken(user.id)
+      user: result.user,
+      token: result.token
     });
   } catch (error) {
     console.error(error);
@@ -61,32 +19,12 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Please provide email and password' });
+    const result = await authService.loginUser(req.body);
+    if (result.error) {
+      return res.status(result.error.status).json({ message: result.error.message });
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
-
-    res.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt
-      },
-      token: generateToken(user.id)
-    });
+    res.json(result);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -95,15 +33,12 @@ const loginUser = async (req, res) => {
 
 const getMe = async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.id },
-      include: {
-        preferences: true,
-        subscription: true
-      }
-    });
-    const { password: _, ...userWithoutPassword } = user;
-    res.json(userWithoutPassword);
+    const result = await authService.getAuthenticatedProfile(req.user.id);
+    if (result.error) {
+      return res.status(result.error.status).json({ message: result.error.message });
+    }
+
+    res.json(result.user);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

@@ -1,7 +1,5 @@
-const jwt = require('jsonwebtoken');
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+const authService = require('../services/authService');
+const authRepository = require('../repositories/authRepository');
 
 const protect = async (req, res, next) => {
   let token;
@@ -15,11 +13,8 @@ const protect = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'snacksafari_jwt_secret_key_2024');
-    req.user = await prisma.user.findUnique({
-      where: { id: decoded.id },
-      select: { id: true, name: true, email: true, role: true }
-    });
+    const decoded = authService.verifyToken(token);
+    req.user = await authRepository.findPublicById(decoded.id);
 
     if (!req.user) {
       return res.status(401).json({ message: 'Not authorized, user not found' });

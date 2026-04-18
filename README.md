@@ -106,9 +106,14 @@ GitHub Actions workflow in `.github/workflows/main.yml` runs on push and pull re
 ### Render (Backend) + Vercel (Frontend)
 
 - Backend uses `render.yaml`
-- Frontend can be deployed to Vercel from `client/`
+- Frontend is configured for Vercel at repository root via `vercel.json`
 - Ensure frontend API base URL points to deployed backend:
-	- set `VITE_API_URL` in frontend environment variables
+	- set `VITE_API_URL` in Vercel environment variables (example: `https://fsde-project--Mario5T.replit.app/api`)
+
+Vercel build settings are automatic from `vercel.json`:
+- install command: `npm --prefix client install`
+- build command: `npm --prefix client run build`
+- output directory: `client/dist`
 
 ### EC2 Deployment via GitHub Actions
 

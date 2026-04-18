@@ -1,241 +1,172 @@
-# SnackSafari — Class Diagram
+# SnackSafari - Class Diagram
 
 ```mermaid
 classDiagram
-    direction TB
-
-    %% ─── SERVER-SIDE CLASSES ─────────────────────────────
+    direction LR
 
     class App {
-        +express app
-        +use(cors)
-        +use(json)
-        +use("/api/auth", authRoutes)
-        +get("/api/health")
-        +get("/")
-    }
-
-    class ConnectDB {
-        +connectDB() Promise~void~
-    }
-
-    class AuthRoutes {
-        +POST /register → registerUser
-        +POST /login → loginUser
-        +GET /me → protect, getMe
+        +Express app
+        +mountRoutes()
     }
 
     class AuthController {
-        -generateToken(id) string
-        +registerUser(req, res) Promise~void~
-        +loginUser(req, res) Promise~void~
-        +getMe(req, res) Promise~void~
+        +registerUser(req,res)
+        +loginUser(req,res)
+        +getMe(req,res)
+    }
+
+    class SnackController {
+        +getSnacks(req,res)
+        +getSnackById(req,res)
+        +createSnack(req,res)
+        +updateSnack(req,res)
+        +deleteSnack(req,res)
+    }
+
+    class PlanController {
+        +getPlans(req,res)
+        +getPlanById(req,res)
+        +createPlan(req,res)
+    }
+
+    class OrderController {
+        +getOrders(req,res)
+        +createOrder(req,res)
+    }
+
+    class UserController {
+        +updatePreferences(req,res)
+        +updateSubscription(req,res)
+        +getUsers(req,res)
+    }
+
+    class AuthService {
+        +registerUser(payload)
+        +loginUser(payload)
+        +getAuthenticatedProfile(userId)
+        +verifyToken(token)
+    }
+
+    class SnackService {
+        +listSnacks(category)
+        +getSnackById(id)
+        +createSnack(data)
+        +updateSnack(id,data)
+        +deleteSnack(id)
+    }
+
+    class PlanService {
+        +listPlans()
+        +getPlanById(id)
+        +createPlan(data)
+    }
+
+    class OrderService {
+        +listOrders(userId)
+        +createOrder(userId,payload)
+    }
+
+    class UserService {
+        +updatePreferences(userId,payload)
+        +updateSubscription(userId,payload)
+        +listUsers()
+    }
+
+    class AuthRepository {
+        +findByEmail(email)
+        +createUserWithDefaults(data)
+        +findByIdWithProfile(id)
+        +findPublicById(id)
+    }
+
+    class SnackRepository {
+        +findAvailable(category)
+        +findById(id)
+        +create(data)
+        +update(id,data)
+        +remove(id)
+    }
+
+    class PlanRepository {
+        +findAll()
+        +findById(id)
+        +create(data)
+    }
+
+    class OrderRepository {
+        +findByUserId(userId)
+        +createOrder(payload)
+    }
+
+    class UserRepository {
+        +upsertPreferences(userId,tastes,allergies,boxSize)
+        +upsertSubscription(userId,payload)
+        +findAllUsers()
+    }
+
+    class PrismaClient {
+        +user
+        +snack
+        +subscriptionPlan
+        +order
+        +preferences
+        +subscription
     }
 
     class AuthMiddleware {
-        +protect(req, res, next) Promise~void~
-    }
-
-    class UserModel {
-        +String name
-        +String email
-        +String password
-        +String role ["user" | "admin"]
-        +Preferences preferences
-        +Subscription subscription
-        +Date createdAt
-        +pre("save") hashPassword()
-        +matchPassword(entered) Promise~boolean~
-    }
-
-    class Preferences {
-        +String[] tastes
-        +String[] allergies
-        +String boxSize ["Small" | "Medium" | "Large"]
-    }
-
-    class Subscription {
-        +Boolean active
-        +String plan
-        +Date startDate
-        +Date nextDeliveryDate
-    }
-
-    %% Server-side relationships
-    App --> AuthRoutes : mounts
-    App --> ConnectDB : calls on startup
-    AuthRoutes --> AuthController : delegates to
-    AuthRoutes --> AuthMiddleware : uses protect
-    AuthController --> UserModel : queries / creates
-    AuthMiddleware --> UserModel : findById
-    UserModel --> Preferences : embeds
-    UserModel --> Subscription : embeds
-
-    %% ─── CLIENT-SIDE CLASSES ─────────────────────────────
-
-    class AppComponent {
-        +Router
-        +LazyMotion
-        +AuthProvider
-        +Navigation
-        +Routes
-    }
-
-    class Navigation {
-        +NavLink[] navLinks
-        +isLanding boolean
-        +render() JSX
+        +protect(req,res,next)
+        +adminOnly(req,res,next)
     }
 
     class AuthContext {
-        +user State
-        +loading State
-        +login(email, password) Promise~void~
-        +register(name, email, password) Promise~void~
-        +logout() void
-        +checkUserLoggedIn() Promise~void~
+        +user state
+        +login(email,password)
+        +register(name,email,password)
+        +logout()
+        +updatePreferences(prefs)
+        +updateSubscription(sub)
     }
 
-    class LandingPage {
-        +Hero
-        +HowItWorks
-        +SnackDiscovery
-        +SubscriptionPlans
-        +Testimonials
-        +Footer
+    class APIClient {
+        +normalizeApiBaseUrl(value)
+        +api.get/post/put/delete()
     }
 
-    class LoginPage {
-        +email State
-        +password State
-        +error State
-        +isLoading State
-        +handleSubmit(e) Promise~void~
-    }
+    App --> AuthController
+    App --> SnackController
+    App --> PlanController
+    App --> OrderController
+    App --> UserController
 
-    class RegisterPage {
-        +name State
-        +email State
-        +password State
-        +error State
-        +isLoading State
-        +handleSubmit(e) Promise~void~
-    }
+    AuthController --> AuthService
+    SnackController --> SnackService
+    PlanController --> PlanService
+    OrderController --> OrderService
+    UserController --> UserService
 
-    class ExplorePage {
-        +snacks[] staticData
-        +categories[] filters
-        +activeCategory State
-        +usePexelsImages() hook
-        +SnackGridCard
-        +SkeletonGridCard
-    }
+    AuthService --> AuthRepository
+    SnackService --> SnackRepository
+    PlanService --> PlanRepository
+    OrderService --> OrderRepository
+    UserService --> UserRepository
 
-    class PlansPage {
-        +plans[] staticData
-        +billingToggle State
-        +selectedPlan State
-    }
+    AuthRepository --> PrismaClient
+    SnackRepository --> PrismaClient
+    PlanRepository --> PrismaClient
+    OrderRepository --> PrismaClient
+    UserRepository --> PrismaClient
 
-    class ProductPage {
-        +quantity State
-        +handleAdd() void
-    }
+    AuthMiddleware --> AuthService
+    AuthMiddleware --> AuthRepository
 
-    class DashboardPage {
-        +subscriptionStatus
-        +deliveryHistory
-        +preferenceSettings
-    }
-
-    class UsePexelsImages {
-        +images PexelsPhoto[]
-        +loading boolean
-        +error string?
-        +fetchImages() Promise~void~
-        +refetch() void
-    }
-
-    class PexelsPhoto {
-        +number id
-        +string url
-        +string photographer
-        +string avg_color
-        +Src src
-        +string alt
-    }
-
-    %% UI Component Library
-    class UIComponents {
-        <<abstract>>
-        +Button
-        +Card
-        +Container
-        +Input
-        +Section
-        +Typography (Heading, Text)
-    }
-
-    class LandingComponents {
-        <<abstract>>
-        +Hero
-        +HowItWorks
-        +SnackDiscovery
-        +SubscriptionPlans
-        +Testimonials
-        +Footer
-        +MotionWrappers
-        +SmoothScroll
-    }
-
-    %% Client-side relationships
-    AppComponent --> AuthContext : provides
-    AppComponent --> Navigation : renders
-    AppComponent --> LandingPage : route "/"
-    AppComponent --> LoginPage : route "/login"
-    AppComponent --> RegisterPage : route "/register"
-    AppComponent --> PlansPage : route "/plans"
-    AppComponent --> ExplorePage : route "/explore"
-    AppComponent --> ProductPage : route "/product"
-    AppComponent --> DashboardPage : route "/dashboard"
-
-    LoginPage --> AuthContext : uses login()
-    RegisterPage --> AuthContext : uses register()
-    DashboardPage --> AuthContext : uses user data
-
-    LandingPage --> LandingComponents : composes
-    ExplorePage --> UsePexelsImages : uses hook
-    UsePexelsImages --> PexelsPhoto : returns
-
-    LoginPage --> UIComponents : uses
-    RegisterPage --> UIComponents : uses
-    ExplorePage --> UIComponents : uses
-    PlansPage --> UIComponents : uses
-    ProductPage --> UIComponents : uses
-    DashboardPage --> UIComponents : uses
-
-    %% Cross-boundary
-    AuthContext ..> App : HTTP requests via Axios
+    AuthContext --> APIClient
+    APIClient --> App : HTTP /api/*
 ```
 
-## Class Summary
+## OOP And Pattern Notes
 
-| Layer | Class | Responsibility |
-|-------|-------|----------------|
-| **Server** | `App` | Express app setup, middleware, route mounting |
-| **Server** | `ConnectDB` | MongoDB connection via Mongoose |
-| **Server** | `AuthRoutes` | Route definitions for `/api/auth` |
-| **Server** | `AuthController` | Business logic for register, login, getMe |
-| **Server** | `AuthMiddleware` | JWT token verification, route protection |
-| **Server** | `UserModel` | Mongoose schema with password hashing |
-| **Server** | `Preferences` | Embedded sub-document (tastes, allergies, boxSize) |
-| **Server** | `Subscription` | Embedded sub-document (plan, dates, status) |
-| **Client** | `AppComponent` | Root component with routing and providers |
-| **Client** | `AuthContext` | Global auth state management (login/register/logout) |
-| **Client** | `LoginPage` / `RegisterPage` | Authentication forms |
-| **Client** | `ExplorePage` | Snack browsing with filtering and Pexels images |
-| **Client** | `PlansPage` | Subscription plan display and selection |
-| **Client** | `ProductPage` | Individual product detail and cart interaction |
-| **Client** | `DashboardPage` | User subscription and preference management |
-| **Client** | `UsePexelsImages` | Custom hook for Pexels API integration |
-| **Client** | `UIComponents` | Reusable UI primitives (Button, Card, Input, etc.) |
+- Encapsulation: each layer exposes a focused public API and hides implementation details.
+- Single Responsibility: controllers handle HTTP, services handle business rules, repositories handle persistence.
+- Repository Pattern: all Prisma operations are centralized in repository classes/modules.
+- Service Layer Pattern: validation, token handling, and workflow logic live in services.
+- Middleware Pattern: auth and authorization checks are reusable cross-cutting concerns.
